@@ -21,7 +21,7 @@ public class ScreenGame implements Screen {
 
     Texture imgBG;
     Texture imgShipsAtlas;
-    TextureRegion imgShip;
+    TextureRegion[] imgShip = new TextureRegion[12];
 
     SpaceXButton btnBack;
 
@@ -37,7 +37,11 @@ public class ScreenGame implements Screen {
 
         imgBG = new Texture("bg2.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
-        imgShip = new TextureRegion(imgShipsAtlas, 0, 0, 400, 400);
+        for (int i = 0; i < imgShip.length; i++) {
+            imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
+            /*if(i<7) imgShip[i] = new TextureRegion(imgShipsAtlas, i*400, 0, 400, 400);
+            else imgShip[i] = new TextureRegion(imgShipsAtlas, (12-i)*400, 0, 400, 400);*/
+        }
 
         btnBack = new SpaceXButton(font, "x", 850, 1580);
 
@@ -68,14 +72,13 @@ public class ScreenGame implements Screen {
         /*for (int i = 0; i < space.length; i++) {
             space[i].move();
         }*/
-
-
+        ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
-        batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
+        batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
