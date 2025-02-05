@@ -73,12 +73,20 @@ public class ScreenGame implements Screen {
         /*for (int i = 0; i < space.length; i++) {
             space[i].move();
         }*/
+        String st="X=";
+        if (isAccelerometerOn){
+            float x = Gdx.input.getAccelerometerX();
+            float y = Gdx.input.getAccelerometerY();
+            float z = Gdx.input.getAccelerometerZ();
+            st="X="+x+"\nY="+y+"\nZ="+z;
+        }
         ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
+        font.draw(batch, st, 0, 1000);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();

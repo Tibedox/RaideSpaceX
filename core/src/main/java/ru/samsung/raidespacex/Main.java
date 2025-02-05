@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 public class Main extends Game {
     public static final float SCR_WIDTH = 900;
     public static final float SCR_HEIGHT = 1600;
+    public static boolean isAccelerometerOn = true;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;

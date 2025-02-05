@@ -2,6 +2,7 @@ package ru.samsung.raidespacex;
 
 import static ru.samsung.raidespacex.Main.SCR_HEIGHT;
 import static ru.samsung.raidespacex.Main.SCR_WIDTH;
+import static ru.samsung.raidespacex.Main.isAccelerometerOn;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -22,6 +23,7 @@ public class ScreenSettings implements Screen {
     Texture imgBG;
 
     SpaceXButton btnBack;
+    SpaceXButton btnAccelerometer;
 
     public ScreenSettings(Main main) {
         this.main = main;
@@ -33,6 +35,7 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg3.jpg");
 
         btnBack = new SpaceXButton(font, "Back", 250, 400);
+        btnAccelerometer = new SpaceXButton(font, "Accelerometr OFF", 1000);
     }
 
     @Override
@@ -49,6 +52,16 @@ public class ScreenSettings implements Screen {
             if(btnBack.hit(touch.x, touch.y)){
                 main.setScreen(main.screenMenu);
             }
+
+            if(btnAccelerometer.hit(touch)){
+                if(isAccelerometerOn) {
+                    btnAccelerometer.changeText("Accelerometr OFF");
+                    isAccelerometerOn = false;
+                } else {
+                    btnAccelerometer.changeText("Accelerometr ON");
+                    isAccelerometerOn = true;
+                }
+            }
         }
 
         // отрисовка
@@ -56,6 +69,7 @@ public class ScreenSettings implements Screen {
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         font.draw(batch,"Settings", 300, 1200);
+        btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
