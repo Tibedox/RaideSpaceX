@@ -1,5 +1,8 @@
 package ru.samsung.raidespacex;
 
+import static ru.samsung.raidespacex.Main.SCR_HEIGHT;
+import static ru.samsung.raidespacex.Main.SCR_WIDTH;
+
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -17,12 +20,32 @@ public class Ship extends SpaceObject{
     public void move() {
         super.move();
         changePhase();
+        outOfScreen();
     }
 
     public void changePhase() {
         if(TimeUtils.millis() > timeLastPhase+timePhaseInterval) {
             if (++phase == 12) phase = 0;
             timeLastPhase = TimeUtils.millis();
+        }
+    }
+
+    private void outOfScreen(){
+        if(x<width/2) {
+            vx = 0;
+            x = width/2;
+        }
+        if(x>SCR_WIDTH-width/2) {
+            vx = 0;
+            x = SCR_WIDTH-width/2;
+        }
+        if(y<height/2) {
+            vy = 0;
+            y = height/2;
+        }
+        if(y>SCR_HEIGHT-height/2) {
+            vy = 0;
+            y = SCR_HEIGHT-height/2;
         }
     }
 
