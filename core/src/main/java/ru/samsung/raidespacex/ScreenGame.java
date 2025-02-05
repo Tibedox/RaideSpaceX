@@ -136,6 +136,7 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            ship.stop();
             return false;
         }
 
