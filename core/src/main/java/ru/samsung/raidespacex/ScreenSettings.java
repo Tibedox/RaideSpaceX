@@ -35,7 +35,7 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg3.jpg");
 
         btnBack = new SpaceXButton(font, "Back", 250, 400);
-        btnAccelerometer = new SpaceXButton(font, "Accelerometr OFF", 1000);
+        btnAccelerometer = new SpaceXButton(font, isAccelerometerOn?"Accelerometr ON":"Accelerometr OFF", 1000);
     }
 
     @Override
