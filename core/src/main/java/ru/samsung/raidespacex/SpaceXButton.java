@@ -32,11 +32,17 @@ public class SpaceXButton {
         this.x = SCR_WIDTH/2-width/2;
     }
 
-    public void changeText(String text){
+    public void setText(String text){
         this.text = text;
         GlyphLayout glyphLayout = new GlyphLayout(font, text);
         width = glyphLayout.width;
-        this.x = SCR_WIDTH/2-width/2;
+    }
+
+    public void setFont(BitmapFont font){
+        this.font = font;
+        GlyphLayout glyphLayout = new GlyphLayout(font, text);
+        width = glyphLayout.width;
+        height = glyphLayout.height;
     }
 
     boolean hit(float tx, float ty){

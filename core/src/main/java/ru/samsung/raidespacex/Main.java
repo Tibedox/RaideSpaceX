@@ -10,12 +10,14 @@ import com.badlogic.gdx.math.Vector3;
 public class Main extends Game {
     public static final float SCR_WIDTH = 900;
     public static final float SCR_HEIGHT = 1600;
-    public static boolean isAccelerometerOn = true;
+    public static final int SCREEN = 0, JOYSTICK_LEFT = 1, JOYSTICK_RIGHT = 2, ACCELEROMETER = 3;
+    public static int contols = SCREEN;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
-    public BitmapFont font;
+    public BitmapFont fontLightGreen;
+    public BitmapFont fontDarkGreen;
 
     public ScreenMenu screenMenu;
     public ScreenGame screenGame;
@@ -29,7 +31,8 @@ public class Main extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, SCR_WIDTH,SCR_HEIGHT);
         touch = new Vector3();
-        font = new BitmapFont(Gdx.files.internal("dscrystal100.fnt"));
+        fontLightGreen = new BitmapFont(Gdx.files.internal("dscrystal100lightgreen.fnt"));
+        fontDarkGreen = new BitmapFont(Gdx.files.internal("dscrystal100darkgreen.fnt"));
 
         screenMenu = new ScreenMenu(this);
         screenGame = new ScreenGame(this);
@@ -42,6 +45,7 @@ public class Main extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
+        fontLightGreen.dispose();
+        fontDarkGreen.dispose();
     }
 }

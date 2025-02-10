@@ -28,7 +28,7 @@ public class ScreenLeaderBoard implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.font;
+        font = main.fontLightGreen;
 
         imgBG = new Texture("bg4.jpg");
 

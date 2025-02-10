@@ -34,7 +34,7 @@ public class ScreenGame implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.font;
+        font = main.fontLightGreen;
         Gdx.input.setInputProcessor(new SpaceXProcessor());
 
         imgBG = new Texture("bg2.jpg");
@@ -73,7 +73,7 @@ public class ScreenGame implements Screen {
         /*for (int i = 0; i < space.length; i++) {
             space[i].move();
         }*/
-        if (isAccelerometerOn){
+        if (contols == ACCELEROMETER){
             ship.vx = -Gdx.input.getAccelerometerX()*2;
             ship.vy = -Gdx.input.getAccelerometerY()*2;
         }
@@ -132,9 +132,11 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            touch.set(screenX, screenY, 0);
-            camera.unproject(touch);
-            ship.touch(touch);
+            if(contols == SCREEN) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                ship.touch(touch);
+            }
             return false;
         }
 
@@ -151,9 +153,11 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            touch.set(screenX, screenY, 0);
-            camera.unproject(touch);
-            ship.touch(touch);
+            if(contols == SCREEN) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                ship.touch(touch);
+            }
             return false;
         }
 
