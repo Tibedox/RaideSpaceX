@@ -75,8 +75,8 @@ public class ScreenGame implements Screen {
             space[i].move();
         }*/
         if (controls == ACCELEROMETER){
-            ship.vx = -Gdx.input.getAccelerometerX()*3;
-            ship.vy = -Gdx.input.getAccelerometerY()*3;
+            ship.vx = -Gdx.input.getAccelerometerX()*5;
+            ship.vy = -Gdx.input.getAccelerometerY()*5;
         }
         ship.move();
 
