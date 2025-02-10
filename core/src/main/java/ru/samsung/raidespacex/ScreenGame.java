@@ -10,9 +10,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 public class ScreenGame implements Screen {
+
+    private final float joystickWidth = 380, joystickHeight = 380;
+    private final float joystickX = joystickWidth/2, joystickY = joystickHeight/2;
 
     private final Main main;
     private final SpriteBatch batch;
@@ -20,6 +24,7 @@ public class ScreenGame implements Screen {
     private final Vector3 touch;
     private final BitmapFont font;
 
+    Texture imgJoystick;
     Texture imgBG;
     Texture imgShipsAtlas;
     TextureRegion[] imgShip = new TextureRegion[12];
@@ -37,6 +42,7 @@ public class ScreenGame implements Screen {
         font = main.fontLightGreen;
         Gdx.input.setInputProcessor(new SpaceXProcessor());
 
+        imgJoystick = new Texture("joystick.png");
         imgBG = new Texture("bg2.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
         for (int i = 0; i < imgShip.length; i++) {
@@ -84,6 +90,9 @@ public class ScreenGame implements Screen {
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
+        if(contols == JOYSTICK_LEFT){
+            batch.draw(imgJoystick, 0, 0, joystickWidth, joystickHeight);
+        }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -137,6 +146,14 @@ public class ScreenGame implements Screen {
                 camera.unproject(touch);
                 ship.touch(touch);
             }
+            if(contols == JOYSTICK_LEFT) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                if(Math.pow(touch.x-joystickWidth/2,2) + Math.pow(touch.y-joystickWidth/2,2) <= Math.pow(joystickWidth/2,2)) {
+                    ship.vx = (touch.x-joystickWidth/2)/10;
+                    ship.vy = (touch.y-joystickWidth/2)/10;
+                }
+            }
             return false;
         }
 
@@ -157,6 +174,14 @@ public class ScreenGame implements Screen {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 ship.touch(touch);
+            }
+            if(contols == JOYSTICK_LEFT) {
+                touch.set(screenX, screenY, 0);
+                camera.unproject(touch);
+                if(Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(joystickWidth/2,2)) {
+                    ship.vx = (touch.x-joystickX)/10;
+                    ship.vy = (touch.y-joystickY)/10;
+                }
             }
             return false;
         }
