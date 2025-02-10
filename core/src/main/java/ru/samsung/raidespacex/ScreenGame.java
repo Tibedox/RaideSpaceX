@@ -10,14 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 public class ScreenGame implements Screen {
-
-    private final float joystickWidth = 380, joystickHeight = 380;
-    private final float joystickX = joystickWidth/2, joystickY = joystickHeight/2;
-
     private final Main main;
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
@@ -79,7 +74,7 @@ public class ScreenGame implements Screen {
         /*for (int i = 0; i < space.length; i++) {
             space[i].move();
         }*/
-        if (contols == ACCELEROMETER){
+        if (controls == ACCELEROMETER){
             ship.vx = -Gdx.input.getAccelerometerX()*2;
             ship.vy = -Gdx.input.getAccelerometerY()*2;
         }
@@ -90,8 +85,8 @@ public class ScreenGame implements Screen {
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        if(contols == JOYSTICK_LEFT){
-            batch.draw(imgJoystick, 0, 0, joystickWidth, joystickHeight);
+        if(controls == JOYSTICK){
+            batch.draw(imgJoystick, joystickX-joystickWidth/2, joystickY-joystickHeight/2, joystickWidth, joystickHeight);
         }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
@@ -141,17 +136,17 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            if(contols == SCREEN) {
+            if(controls == SCREEN) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 ship.touch(touch);
             }
-            if(contols == JOYSTICK_LEFT) {
+            if(controls == JOYSTICK) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
-                if(Math.pow(touch.x-joystickWidth/2,2) + Math.pow(touch.y-joystickWidth/2,2) <= Math.pow(joystickWidth/2,2)) {
-                    ship.vx = (touch.x-joystickWidth/2)/10;
-                    ship.vy = (touch.y-joystickWidth/2)/10;
+                if(Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(joystickWidth/2,2)) {
+                    ship.vx = (touch.x-joystickX)/10;
+                    ship.vy = (touch.y-joystickY)/10;
                 }
             }
             return false;
@@ -170,12 +165,12 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            if(contols == SCREEN) {
+            if(controls == SCREEN) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 ship.touch(touch);
             }
-            if(contols == JOYSTICK_LEFT) {
+            if(controls == JOYSTICK) {
                 touch.set(screenX, screenY, 0);
                 camera.unproject(touch);
                 if(Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(joystickWidth/2,2)) {

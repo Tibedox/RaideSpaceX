@@ -10,8 +10,13 @@ import com.badlogic.gdx.math.Vector3;
 public class Main extends Game {
     public static final float SCR_WIDTH = 900;
     public static final float SCR_HEIGHT = 1600;
-    public static final int SCREEN = 0, JOYSTICK_LEFT = 1, JOYSTICK_RIGHT = 2, ACCELEROMETER = 3;
-    public static int contols = SCREEN;
+    public static final int SCREEN = 0, JOYSTICK = 1, ACCELEROMETER = 2;
+    public static int controls = SCREEN;
+    public static boolean isJoystickLeft = true;
+    public static final float joystickWidth = 380;
+    public static final float joystickHeight = 380;
+    public static float joystickX = joystickWidth/2;
+    public static float joystickY = joystickHeight/2;
 
     public SpriteBatch batch;
     public OrthographicCamera camera;
