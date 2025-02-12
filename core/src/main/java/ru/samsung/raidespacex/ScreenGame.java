@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScreenGame implements Screen {
     private final Main main;
@@ -23,11 +27,15 @@ public class ScreenGame implements Screen {
     Texture imgBG;
     Texture imgShipsAtlas;
     TextureRegion[] imgShip = new TextureRegion[12];
+    TextureRegion[][] imgEnemy = new TextureRegion[4][12];
 
     SpaceXButton btnBack;
 
-    Ship ship;
     Space[] space = new Space[2];
+    Ship ship;
+    List<Enemy> enemies = new ArrayList<>();
+
+    private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -44,6 +52,11 @@ public class ScreenGame implements Screen {
             imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
             /*if(i<7) imgShip[i] = new TextureRegion(imgShipsAtlas, i*400, 0, 400, 400);
             else imgShip[i] = new TextureRegion(imgShipsAtlas, (12-i)*400, 0, 400, 400);*/
+        }
+        for (int j = 0; j < imgEnemy.length; j++) {
+            for (int i = 0; i < imgEnemy[j].length; i++) {
+                imgEnemy[j][i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, (j+1)*400, 400, 400);
+            }
         }
 
         btnBack = new SpaceXButton(font, "x", 850, 1580);
@@ -68,22 +81,24 @@ public class ScreenGame implements Screen {
                 main.setScreen(main.screenMenu);
             }
         }
-
-        // события
-        for (Space s: space) s.move();
-        /*for (int i = 0; i < space.length; i++) {
-            space[i].move();
-        }*/
         if (controls == ACCELEROMETER){
             ship.vx = -Gdx.input.getAccelerometerX()*5;
             ship.vy = -Gdx.input.getAccelerometerY()*5;
         }
+
+        // события
+        for (Space s: space) s.move();
+        spawnEnemy();
+        for (Enemy e: enemies) e.move();
         ship.move();
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
+        for (Enemy e: enemies) {
+            batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+        }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         if(controls == JOYSTICK){
             batch.draw(imgJoystick, joystickX-JOYSTICK_WIDTH/2, joystickY-JOYSTICK_HEIGHT/2, JOYSTICK_WIDTH, JOYSTICK_HEIGHT);
@@ -115,6 +130,13 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    private void spawnEnemy(){
+        if(TimeUtils.millis()>timeLastSpawnEnemy+timeSpawnEnemyInterval){
+            timeLastSpawnEnemy = TimeUtils.millis();
+            enemies.add(new Enemy());
+        }
     }
 
     class SpaceXProcessor implements InputProcessor{
