@@ -2,6 +2,8 @@ package ru.samsung.raidespacex;
 
 import static ru.samsung.raidespacex.Main.SCR_HEIGHT;
 import static ru.samsung.raidespacex.Main.SCR_WIDTH;
+import static ru.samsung.raidespacex.Main.joystickX;
+import static ru.samsung.raidespacex.Main.joystickY;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -49,14 +51,19 @@ public class Ship extends SpaceObject{
         }
     }
 
-    public void touch(float tx, float ty){
+    public void touchScreen(float tx, float ty){
         vx = (tx-x) / 20;
         vy = (ty-y) / 20;
     }
 
-    public void touch(Vector3 t){
+    public void touchScreen(Vector3 t){
         vx = (t.x-x) / 20;
         vy = (t.y-y) / 20;
+    }
+
+    public void touchJoystick(Vector3 t){
+        vx = (t.x-joystickX)/10;
+        vy = (t.y-joystickY)/10;
     }
 
     public void stop(){

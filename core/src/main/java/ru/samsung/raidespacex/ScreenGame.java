@@ -86,7 +86,7 @@ public class ScreenGame implements Screen {
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         if(controls == JOYSTICK){
-            batch.draw(imgJoystick, joystickX-joystickWidth/2, joystickY-joystickHeight/2, joystickWidth, joystickHeight);
+            batch.draw(imgJoystick, joystickX-JOYSTICK_WIDTH/2, joystickY-JOYSTICK_HEIGHT/2, JOYSTICK_WIDTH, JOYSTICK_HEIGHT);
         }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
@@ -136,17 +136,14 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            touch.set(screenX, screenY, 0);
+            camera.unproject(touch);
             if(controls == SCREEN) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                ship.touch(touch);
+                ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                if(Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(joystickWidth/2,2)) {
-                    ship.vx = (touch.x-joystickX)/10;
-                    ship.vy = (touch.y-joystickY)/10;
+                if(isInsideJoystick()) {
+                    ship.touchJoystick(touch);
                 }
             }
             return false;
@@ -165,17 +162,14 @@ public class ScreenGame implements Screen {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
+            touch.set(screenX, screenY, 0);
+            camera.unproject(touch);
             if(controls == SCREEN) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                ship.touch(touch);
+                ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                touch.set(screenX, screenY, 0);
-                camera.unproject(touch);
-                if(Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(joystickWidth/2,2)) {
-                    ship.vx = (touch.x-joystickX)/10;
-                    ship.vy = (touch.y-joystickY)/10;
+                if(isInsideJoystick()) {
+                    ship.touchJoystick(touch);
                 }
             }
             return false;
@@ -189,6 +183,10 @@ public class ScreenGame implements Screen {
         @Override
         public boolean scrolled(float amountX, float amountY) {
             return false;
+        }
+
+        private boolean isInsideJoystick(){
+            return Math.pow(touch.x-joystickX,2) + Math.pow(touch.y-joystickY,2) <= Math.pow(JOYSTICK_WIDTH /2,2);
         }
     }
 }

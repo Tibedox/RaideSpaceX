@@ -69,11 +69,11 @@ public class ScreenSettings implements Screen {
                     if(isJoystickLeft){
                         isJoystickLeft = false;
                         btnJoystick.setText("Joystick RIGHT");
-                        joystickX = SCR_WIDTH-joystickWidth/2;
+                        joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
                     } else {
                         isJoystickLeft = true;
                         btnJoystick.setText("Joystick LEFT");
-                        joystickX = joystickWidth/2;
+                        joystickX = JOYSTICK_WIDTH/2;
                     }
                 } else {
                     controls = JOYSTICK;
