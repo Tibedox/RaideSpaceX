@@ -26,7 +26,9 @@ public class ScreenGame implements Screen {
     Texture imgJoystick;
     Texture imgBG;
     Texture imgShipsAtlas;
+    Texture imgShotsAtlas;
     TextureRegion[] imgShip = new TextureRegion[12];
+    TextureRegion imgShot;
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
 
     SpaceXButton btnBack;
@@ -34,8 +36,10 @@ public class ScreenGame implements Screen {
     Space[] space = new Space[2];
     Ship ship;
     List<Enemy> enemies = new ArrayList<>();
+    List<Shot> shots = new ArrayList<>();
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
+    private long timeLastSpawnShot, timeSpawnShotsInterval = 500;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -48,6 +52,8 @@ public class ScreenGame implements Screen {
         imgJoystick = new Texture("joystick.png");
         imgBG = new Texture("bg2.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
+        imgShotsAtlas = new Texture("shots.png");
+        imgShot = new TextureRegion(imgShotsAtlas, 0, 0, 100, 350);
         for (int i = 0; i < imgShip.length; i++) {
             imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
             /*if(i<7) imgShip[i] = new TextureRegion(imgShipsAtlas, i*400, 0, 400, 400);
@@ -90,6 +96,8 @@ public class ScreenGame implements Screen {
         for (Space s: space) s.move();
         spawnEnemy();
         for (Enemy e: enemies) e.move();
+        spawnShot();
+        for (Shot s: shots) s.move();
         ship.move();
 
         // отрисовка
@@ -98,6 +106,9 @@ public class ScreenGame implements Screen {
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         for (Enemy e: enemies) {
             batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
+        }
+        for(Shot s: shots) {
+            batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         if(controls == JOYSTICK){
@@ -136,6 +147,14 @@ public class ScreenGame implements Screen {
         if(TimeUtils.millis()>timeLastSpawnEnemy+timeSpawnEnemyInterval){
             timeLastSpawnEnemy = TimeUtils.millis();
             enemies.add(new Enemy());
+        }
+    }
+
+    private void spawnShot(){
+        if(TimeUtils.millis()>timeLastSpawnShot+timeSpawnShotsInterval){
+            timeLastSpawnShot = TimeUtils.millis();
+            shots.add(new Shot(ship.x-60, ship.y+20));
+            shots.add(new Shot(ship.x+60, ship.y+20));
         }
     }
 
