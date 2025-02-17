@@ -10,6 +10,9 @@ public class SpaceObject {
         this.y = y;
     }
 
+    public SpaceObject() {
+    }
+
     public void move(){
         x += vx;
         y += vy;

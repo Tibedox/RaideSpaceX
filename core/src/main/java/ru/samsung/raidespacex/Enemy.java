@@ -14,7 +14,6 @@ public class Enemy extends SpaceObject{
     private long timeLastPhase, timePhaseInterval = 40;
 
     public Enemy() {
-        super(0, 0);
         width = height = 200;
         health = 1;
         type = MathUtils.random(0, 3);

@@ -39,7 +39,7 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg3.jpg");
         btnControls = new SpaceXButton(fontLightGreen, "Controls", 100, 1200);
         btnScreen = new SpaceXButton(fontLightGreen, "Screen", 200, 1100);
-        btnJoystick = new SpaceXButton(fontDarkGreen, "Joystick LEFT", 200, 1000);
+        btnJoystick = new SpaceXButton(fontDarkGreen, joystickText(), 200, 1000);
         btnAccelerometer = new SpaceXButton(fontDarkGreen, "Accelerometr", 200, 900);
         btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
     }
@@ -66,15 +66,8 @@ public class ScreenSettings implements Screen {
                 btnJoystick.setFont(fontLightGreen);
                 btnAccelerometer.setFont(fontDarkGreen);
                 if(controls == JOYSTICK) {
-                    if(isJoystickLeft){
-                        isJoystickLeft = false;
-                        btnJoystick.setText("Joystick RIGHT");
-                        joystickX = SCR_WIDTH-JOYSTICK_WIDTH/2;
-                    } else {
-                        isJoystickLeft = true;
-                        btnJoystick.setText("Joystick LEFT");
-                        joystickX = JOYSTICK_WIDTH/2;
-                    }
+                    main.joystick.setSide(!main.joystick.side);
+                    btnJoystick.setText(joystickText());
                 } else {
                     controls = JOYSTICK;
                 }
@@ -126,5 +119,9 @@ public class ScreenSettings implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    private String joystickText() {
+        return main.joystick.side == RIGHT ? "Joystick RIGHT" : "Joystick LEFT";
     }
 }
