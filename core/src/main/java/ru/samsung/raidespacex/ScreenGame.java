@@ -5,6 +5,7 @@ import static ru.samsung.raidespacex.Main.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -30,6 +31,9 @@ public class ScreenGame implements Screen {
     TextureRegion[] imgShip = new TextureRegion[12];
     TextureRegion imgShot;
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
+
+    Sound sndExplosion;
+    Sound sndBlaster;
 
     SpaceXButton btnBack;
 
@@ -64,6 +68,9 @@ public class ScreenGame implements Screen {
                 imgEnemy[j][i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, (j+1)*400, 400, 400);
             }
         }
+
+        sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
+        sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
         btnBack = new SpaceXButton(font, "x", 850, 1580);
 
@@ -108,6 +115,7 @@ public class ScreenGame implements Screen {
                 if(shots.get(i).overlap(enemies.get(j))){
                     shots.remove(i);
                     enemies.remove(j);
+                    sndExplosion.play();
                     break;
                 }
             }
@@ -168,6 +176,7 @@ public class ScreenGame implements Screen {
             timeLastSpawnShot = TimeUtils.millis();
             shots.add(new Shot(ship.x-60, ship.y+20));
             shots.add(new Shot(ship.x+60, ship.y+20));
+            sndBlaster.play();
         }
     }
 
