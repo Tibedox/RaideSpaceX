@@ -25,4 +25,8 @@ public class SpaceObject {
     public float scrY(){
         return y-height/2;
     }
+
+    public boolean overlap(SpaceObject o){
+        return Math.abs(x-o.x) < width/2+o.width/2 && Math.abs(y-o.y) < height/2+o.height/2;
+    }
 }
