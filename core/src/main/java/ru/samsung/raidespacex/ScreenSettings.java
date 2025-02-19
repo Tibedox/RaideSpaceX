@@ -26,6 +26,7 @@ public class ScreenSettings implements Screen {
     SpaceXButton btnScreen;
     SpaceXButton btnJoystick;
     SpaceXButton btnAccelerometer;
+    SpaceXButton btnSound;
     SpaceXButton btnBack;
 
     public ScreenSettings(Main main) {
@@ -41,6 +42,7 @@ public class ScreenSettings implements Screen {
         btnScreen = new SpaceXButton(fontLightGreen, "Screen", 200, 1100);
         btnJoystick = new SpaceXButton(fontDarkGreen, joystickText(), 200, 1000);
         btnAccelerometer = new SpaceXButton(fontDarkGreen, "Accelerometr", 200, 900);
+        btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 800);
         btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
     }
 
@@ -78,6 +80,10 @@ public class ScreenSettings implements Screen {
                 btnAccelerometer.setFont(fontLightGreen);
                 controls = ACCELEROMETER;
             }
+            if(btnSound.hit(touch.x, touch.y)){
+                isSoundOn = !isSoundOn;
+                btnSound.setText(soundText());
+            }
             if(btnBack.hit(touch.x, touch.y)){
                 main.setScreen(main.screenMenu);
             }
@@ -92,6 +98,7 @@ public class ScreenSettings implements Screen {
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
         btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
+        btnSound.font.draw(batch, btnSound.text, btnSound.x, btnSound.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -123,5 +130,9 @@ public class ScreenSettings implements Screen {
 
     private String joystickText() {
         return main.joystick.side == RIGHT ? "Joystick RIGHT" : "Joystick LEFT";
+    }
+
+    private String soundText() {
+        return isSoundOn ? "Sound On" : "Sound Off";
     }
 }

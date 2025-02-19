@@ -31,6 +31,7 @@ public class ScreenGame implements Screen {
     TextureRegion[] imgShip = new TextureRegion[12];
     TextureRegion imgShot;
     TextureRegion[][] imgEnemy = new TextureRegion[4][12];
+    TextureRegion[][] imgFragment = new TextureRegion[5][16];
 
     Sound sndExplosion;
     Sound sndBlaster;
@@ -60,12 +61,21 @@ public class ScreenGame implements Screen {
         imgShot = new TextureRegion(imgShotsAtlas, 0, 0, 100, 350);
         for (int i = 0; i < imgShip.length; i++) {
             imgShip[i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, 0, 400, 400);
-            /*if(i<7) imgShip[i] = new TextureRegion(imgShipsAtlas, i*400, 0, 400, 400);
-            else imgShip[i] = new TextureRegion(imgShipsAtlas, (12-i)*400, 0, 400, 400);*/
         }
         for (int j = 0; j < imgEnemy.length; j++) {
             for (int i = 0; i < imgEnemy[j].length; i++) {
                 imgEnemy[j][i] = new TextureRegion(imgShipsAtlas, (i<7?i:12-i)*400, (j+1)*400, 400, 400);
+            }
+        }
+        int size = 400/imgFragment[0].length;
+        for (int i = 0; i < imgFragment.length; i++) {
+            for (int j = 0; j < imgFragment[i].length; j++) {
+                if(i<imgFragment.length-1) {
+                    imgFragment[i][j] = new TextureRegion(imgEnemy[i][0], j%4*size, j/4*size, size, size);
+                    System.out.println(j%5*size+" "+j/5*size);
+                } else{
+                    imgFragment[i][j] = new TextureRegion(imgShip[0], j%4*size, j/4*size, size, size);
+                }
             }
         }
 
@@ -113,7 +123,7 @@ public class ScreenGame implements Screen {
                 if(shots.get(i).overlap(enemies.get(j))){
                     shots.remove(i);
                     enemies.remove(j);
-                    sndExplosion.play();
+                    if(isSoundOn) sndExplosion.play();
                     break;
                 }
             }
@@ -132,6 +142,9 @@ public class ScreenGame implements Screen {
         }
         for(Shot s: shots) {
             batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
+        }
+        for (int i = 0; i < imgFragment[0].length; i++) {
+            batch.draw(imgFragment[0][i], 100, i*64, 64, 64);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
@@ -175,7 +188,7 @@ public class ScreenGame implements Screen {
             timeLastSpawnShot = TimeUtils.millis();
             shots.add(new Shot(ship.x-60, ship.y+20));
             shots.add(new Shot(ship.x+60, ship.y+20));
-            sndBlaster.play();
+            if(isSoundOn) sndBlaster.play();
         }
     }
 
