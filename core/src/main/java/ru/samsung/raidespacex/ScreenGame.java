@@ -47,7 +47,7 @@ public class ScreenGame implements Screen {
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
     private long timeLastSpawnShot, timeSpawnShotsInterval = 500;
 
-    private int nFragments = 550;
+    private int nFragments = 100;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -146,7 +146,7 @@ public class ScreenGame implements Screen {
             batch.draw(imgJoystick, main.joystick.scrX(), main.joystick.scrY(), main.joystick.width, main.joystick.height);
         }
         for (Fragment f: fragments) {
-            batch.draw(imgFragment[f.type][f.numImg], f.scrX(), f.scrY(), f.width, f.height);
+            batch.draw(imgFragment[f.type][f.numImg], f.scrX(), f.scrY(), f.width/2, f.height/2, f.width, f.height, 1, 1, f.rotation);
         }
         for (Enemy e: enemies) {
             batch.draw(imgEnemy[e.type][e.phase], e.scrX(), e.scrY(), e.width, e.height);
