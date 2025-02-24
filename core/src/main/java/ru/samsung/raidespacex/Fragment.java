@@ -12,8 +12,10 @@ public class Fragment extends SpaceObject{
         numImg = MathUtils.random(0, numImgFragmets-1);
         width = MathUtils.random(30f, 50f);
         height = MathUtils.random(30f, 50f);
-        vx = MathUtils.random(-10f, 10f);
-        vy = MathUtils.random(-10f, 10f);
+        float a = MathUtils.random(0f, 360f);
+        float v = MathUtils.random(2f, 10f);
+        vx = v*MathUtils.sin(a);
+        vy = v*MathUtils.cos(a);
     }
 
     public boolean outOfScreen(){
