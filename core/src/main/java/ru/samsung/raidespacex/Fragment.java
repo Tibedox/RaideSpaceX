@@ -1,17 +1,19 @@
 package ru.samsung.raidespacex;
 
-import static ru.samsung.raidespacex.Main.SCR_HEIGHT;
-import static ru.samsung.raidespacex.Main.SCR_WIDTH;
+import static ru.samsung.raidespacex.Main.*;
 
 import com.badlogic.gdx.math.MathUtils;
 
 public class Fragment extends SpaceObject{
-    public Fragment(float x, float y) {
+    int numImg;
+    public Fragment(float x, float y, int type, int numImgFragmets) {
         super(x, y);
-        width = MathUtils.random(30, 50);
-        height = MathUtils.random(30, 50);
-        vx = MathUtils.random(-10, 10);
-        vy = MathUtils.random(-10, 10);
+        this.type = type;
+        numImg = MathUtils.random(0, numImgFragmets-1);
+        width = MathUtils.random(30f, 50f);
+        height = MathUtils.random(30f, 50f);
+        vx = MathUtils.random(-10f, 10f);
+        vy = MathUtils.random(-10f, 10f);
     }
 
     public boolean outOfScreen(){

@@ -13,12 +13,12 @@ import com.badlogic.gdx.utils.Align;
 
 public class ScreenSettings implements Screen {
 
-    private Main main;
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private Vector3 touch;
-    private BitmapFont fontLightGreen;
-    private BitmapFont fontDarkGreen;
+    Main main;
+    SpriteBatch batch;
+    OrthographicCamera camera;
+    Vector3 touch;
+    BitmapFont fontLightGreen;
+    BitmapFont fontDarkGreen;
 
     Texture imgBG;
 
