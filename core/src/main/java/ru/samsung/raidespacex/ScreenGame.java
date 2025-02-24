@@ -45,8 +45,7 @@ public class ScreenGame implements Screen {
     List<Fragment> fragments = new ArrayList<>();
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
-    private long timeLastSpawnShot, timeSpawnShotsInterval = 500;
-
+    private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
 
     private int nFragments = 100;
 
@@ -125,10 +124,12 @@ public class ScreenGame implements Screen {
         for (int i = shots.size()-1; i>=0; i--) {
             for (int j = enemies.size()-1; j>=0; j--) {
                 if(shots.get(i).overlap(enemies.get(j))){
-                    spawnFragments(enemies.get(j));
+                    if(--enemies.get(j).hp == 0) {
+                        spawnFragments(enemies.get(j));
+                        enemies.remove(j);
+                    }
                     shots.remove(i);
-                    enemies.remove(j);
-                    if(isSoundOn) sndExplosion.play();
+                    if (isSoundOn) sndExplosion.play();
                     break;
                 }
             }
