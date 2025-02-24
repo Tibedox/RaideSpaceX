@@ -47,6 +47,7 @@ public class ScreenGame implements Screen {
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
     private long timeLastSpawnShot, timeSpawnShotsInterval = 500;
 
+
     private int nFragments = 100;
 
     public ScreenGame(Main main) {
