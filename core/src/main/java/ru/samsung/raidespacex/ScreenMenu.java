@@ -94,7 +94,7 @@ public class ScreenMenu implements Screen {
     private void loadSettings() {
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
         controls = prefs.getInteger("Controls", SCREEN);
-        main.joystick.side = prefs.getBoolean("Joystick", RIGHT);
+        main.joystick.setSide(prefs.getBoolean("Joystick", RIGHT));
         isSoundOn = prefs.getBoolean("Sound", true);
     }
 

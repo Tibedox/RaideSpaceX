@@ -139,9 +139,9 @@ public class ScreenSettings implements Screen {
 
     private void saveSettings() {
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        prefs.putInteger("Controls", controls);
         prefs.putBoolean("Joystick", main.joystick.side);
         prefs.putBoolean("Sound", isSoundOn);
-        prefs.putInteger("Controls", controls);
         prefs.flush();
     }
 }
