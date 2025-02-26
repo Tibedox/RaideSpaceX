@@ -161,6 +161,9 @@ public class ScreenGame implements Screen {
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         font50white.draw(batch, "Kills: "+main.player.kills, 10, 1580);
+        for (int i = 0; i < ship.hp; i++) {
+            batch.draw(imgShip[0], SCR_WIDTH-i*70-140, 1600-70, 60, 60);
+        }
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ship extends SpaceObject{
+    public int hp = 3;
     public int phase, nPhases = 12;
     private long timeLastPhase, timePhaseInterval = 40;
 
