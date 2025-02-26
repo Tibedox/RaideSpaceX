@@ -23,6 +23,7 @@ public class ScreenGame implements Screen {
     private final OrthographicCamera camera;
     private final Vector3 touch;
     private final BitmapFont font;
+    private BitmapFont font50white;
 
     Texture imgJoystick;
     Texture imgBG;
@@ -55,6 +56,7 @@ public class ScreenGame implements Screen {
         camera = main.camera;
         touch = main.touch;
         font = main.fontLightGreen;
+        font50white = main.font50white;
         Gdx.input.setInputProcessor(new SpaceXProcessor());
 
         imgJoystick = new Texture("joystick.png");
@@ -85,7 +87,7 @@ public class ScreenGame implements Screen {
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
-        btnBack = new SpaceXButton(font, "x", 850, 1580);
+        btnBack = new SpaceXButton(font50white, "x", 850, 1580);
 
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
@@ -125,6 +127,7 @@ public class ScreenGame implements Screen {
             for (int j = enemies.size()-1; j>=0; j--) {
                 if(shots.get(i).overlap(enemies.get(j))){
                     if(--enemies.get(j).hp == 0) {
+                        playerKillCounts(enemies.get(j));
                         spawnFragments(enemies.get(j));
                         enemies.remove(j);
                     }
@@ -157,6 +160,7 @@ public class ScreenGame implements Screen {
             batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
+        font50white.draw(batch, "Kills: "+main.player.kills, 10, 1580);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -206,6 +210,12 @@ public class ScreenGame implements Screen {
         for (int i = 0; i < nFragments; i++) {
             fragments.add(new Fragment(o.x, o.y, o.type, imgFragment[0].length));
         }
+    }
+
+    private void playerKillCounts(Enemy e){
+        main.player.kills++;
+        main.player.killedType[e.type]++;
+        main.player.score+=e.hp;
     }
 
     class SpaceXProcessor implements InputProcessor{

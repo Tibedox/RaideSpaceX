@@ -11,12 +11,10 @@ public class Enemy extends SpaceObject{
     private long timeLastPhase, timePhaseInterval = 40;
 
     public Enemy() {
-        width = height = 200;
         type = MathUtils.random(0, 3);
-        hp = getHealthTypes(type);
+        enemySettings(type);
         x = MathUtils.random(width/2, SCR_WIDTH-width/2);
         y = MathUtils.random(SCR_HEIGHT+height, SCR_HEIGHT*2);
-        vy = MathUtils.random(-6f, -3f);
     }
 
     @Override
@@ -32,13 +30,28 @@ public class Enemy extends SpaceObject{
         }
     }
 
-    private int getHealthTypes(int type){
+    private void enemySettings(int type){
         switch (type){
-            case 0: return 2;
-            case 1: return 4;
-            case 2: return 3;
-            case 3: return 1;
+            case 0:
+                hp = 2;
+                width = height = 200;
+                vy = MathUtils.random(-7f, -5f);
+                break;
+            case 1:
+                hp = 4;
+                width = height = 280;
+                vy = MathUtils.random(-4f, -3f);
+                break;
+            case 2:
+                hp = 3;
+                width = height = 220;
+                vy = MathUtils.random(-6f, -4f);
+                break;
+            case 3:
+                hp = 1;
+                width = height = 150;
+                vy = MathUtils.random(-9f, -7f);
+                break;
         }
-        return 0;
     }
 }

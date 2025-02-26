@@ -20,6 +20,7 @@ public class Main extends Game {
     public Vector3 touch;
     public BitmapFont fontLightGreen;
     public BitmapFont fontDarkGreen;
+    public BitmapFont font50white;
 
     Joystick joystick;
     public ScreenMenu screenMenu;
@@ -27,6 +28,7 @@ public class Main extends Game {
     public ScreenSettings screenSettings;
     public ScreenLeaderBoard screenLeaderBoard;
     public ScreenAbout screenAbout;
+    Player player;
 
     @Override
     public void create() {
@@ -36,8 +38,10 @@ public class Main extends Game {
         touch = new Vector3();
         fontLightGreen = new BitmapFont(Gdx.files.internal("dscrystal100lightgreen.fnt"));
         fontDarkGreen = new BitmapFont(Gdx.files.internal("dscrystal100darkgreen.fnt"));
+        font50white = new BitmapFont(Gdx.files.internal("dscrystal50white.fnt"));
 
         joystick = new Joystick(360, RIGHT);
+        player = new Player();
         screenMenu = new ScreenMenu(this);
         screenGame = new ScreenGame(this);
         screenSettings = new ScreenSettings(this);
@@ -51,5 +55,6 @@ public class Main extends Game {
         batch.dispose();
         fontLightGreen.dispose();
         fontDarkGreen.dispose();
+        font50white.dispose();
     }
 }
