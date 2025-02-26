@@ -3,6 +3,7 @@ package ru.samsung.raidespacex;
 import static ru.samsung.raidespacex.Main.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,11 +41,11 @@ public class ScreenMenu implements Screen {
         btnLeaderBoard = new SpaceXButton(font, "LeaderBoard", 250, 700);
         btnAbout = new SpaceXButton(font, "About", 250, 550);
         btnExit = new SpaceXButton(font, "Exit", 250, 400);
+        loadSettings();
     }
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -88,6 +89,13 @@ public class ScreenMenu implements Screen {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void loadSettings() {
+        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        controls = prefs.getInteger("Controls", SCREEN);
+        main.joystick.side = prefs.getBoolean("Joystick", RIGHT);
+        isSoundOn = prefs.getBoolean("Sound", true);
     }
 
     @Override

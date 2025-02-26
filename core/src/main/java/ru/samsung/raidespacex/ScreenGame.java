@@ -215,7 +215,7 @@ public class ScreenGame implements Screen {
     private void playerKillCounts(Enemy e){
         main.player.kills++;
         main.player.killedType[e.type]++;
-        main.player.score+=e.hp;
+        //main.player.score += e.hp;
     }
 
     class SpaceXProcessor implements InputProcessor{

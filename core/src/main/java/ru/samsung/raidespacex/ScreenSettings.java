@@ -3,6 +3,7 @@ package ru.samsung.raidespacex;
 import static ru.samsung.raidespacex.Main.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,10 +40,10 @@ public class ScreenSettings implements Screen {
 
         imgBG = new Texture("bg3.jpg");
         btnControls = new SpaceXButton(fontLightGreen, "Controls", 100, 1200);
-        btnScreen = new SpaceXButton(fontLightGreen, "Screen", 200, 1100);
-        btnJoystick = new SpaceXButton(fontDarkGreen, joystickText(), 200, 1000);
-        btnAccelerometer = new SpaceXButton(fontDarkGreen, "Accelerometr", 200, 900);
-        btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 800);
+        btnScreen = new SpaceXButton(controls==SCREEN?fontLightGreen:fontDarkGreen, "Screen", 200, 1100);
+        btnJoystick = new SpaceXButton(controls==JOYSTICK?fontLightGreen:fontDarkGreen, joystickText(), 200, 1000);
+        btnAccelerometer = new SpaceXButton(controls==ACCELEROMETER?fontLightGreen:fontDarkGreen, "Accelerometr", 200, 900);
+        btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 750);
         btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
     }
 
@@ -120,7 +121,7 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void hide() {
-
+        saveSettings();
     }
 
     @Override
@@ -134,5 +135,13 @@ public class ScreenSettings implements Screen {
 
     private String soundText() {
         return isSoundOn ? "Sound On" : "Sound Off";
+    }
+
+    private void saveSettings() {
+        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        prefs.putBoolean("Joystick", main.joystick.side);
+        prefs.putBoolean("Sound", isSoundOn);
+        prefs.putInteger("Controls", controls);
+        prefs.flush();
     }
 }
