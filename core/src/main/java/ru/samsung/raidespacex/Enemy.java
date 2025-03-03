@@ -23,6 +23,10 @@ public class Enemy extends SpaceObject{
         changePhase();
     }
 
+    public boolean outOfScreen(){
+        return y<-height/2;
+    }
+
     public void changePhase() {
         if(TimeUtils.millis() > timeLastPhase+timePhaseInterval) {
             if (++phase == nPhases) phase = 0;

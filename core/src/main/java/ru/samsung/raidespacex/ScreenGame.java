@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ScreenGame implements Screen {
     private final OrthographicCamera camera;
     private final Vector3 touch;
     private final BitmapFont font;
-    private BitmapFont font50white;
+    private final BitmapFont font50white;
 
     Texture imgJoystick;
     Texture imgBG;
@@ -49,6 +50,7 @@ public class ScreenGame implements Screen {
     private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
 
     private int nFragments = 100;
+    private boolean isGameOver;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -117,8 +119,14 @@ public class ScreenGame implements Screen {
         // события
         for (Space s: space) s.move();
         spawnEnemy();
-        for (Enemy e: enemies) e.move();
-        spawnShot();
+        for (int i = enemies.size()-1; i >= 0; i--) {
+            enemies.get(i).move();
+            if(enemies.get(i).outOfScreen() || enemies.get(i).overlap(ship)){
+                spawnFragments(enemies.get(i));
+                enemies.remove(i);
+                if(!isGameOver) gameOver();
+            }
+        }
         for (int i = shots.size()-1; i>=0; i--) {
             shots.get(i).move();
             if(shots.get(i).outOfScreen()) shots.remove(i);
@@ -141,7 +149,10 @@ public class ScreenGame implements Screen {
             fragments.get(i).move();
             if(fragments.get(i).outOfScreen()) fragments.remove(i);
         }
-        ship.move();
+        if(!isGameOver) {
+            ship.move();
+            spawnShot();
+        }
 
         // отрисовка
         batch.setProjectionMatrix(camera.combined);
@@ -161,9 +172,12 @@ public class ScreenGame implements Screen {
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         font50white.draw(batch, "Kills: "+main.player.kills, 10, 1580);
-        for (int i = 0; i < ship.hp; i++) {
-            batch.draw(imgShip[0], SCR_WIDTH-i*70-140, 1600-70, 60, 60);
+        if(isGameOver){
+            font.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
         }
+        /*for (int i = 0; i < ship.hp; i++) {
+            batch.draw(imgShip[0], SCR_WIDTH-i*70-140, 1600-70, 60, 60);
+        }*/
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
@@ -191,6 +205,13 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    private void gameOver(){
+        if (isSoundOn) sndExplosion.play();
+        spawnFragments(ship);
+        isGameOver = true;
+        ship.x = -10000;
     }
 
     private void spawnEnemy(){

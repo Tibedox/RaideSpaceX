@@ -14,6 +14,7 @@ public class Ship extends SpaceObject{
         super(x, y);
         width = 200;
         height = 200;
+        type = 4;
     }
 
     @Override
