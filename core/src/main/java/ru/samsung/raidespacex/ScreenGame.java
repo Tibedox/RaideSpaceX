@@ -4,6 +4,7 @@ import static ru.samsung.raidespacex.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ScreenGame implements Screen {
@@ -45,6 +47,7 @@ public class ScreenGame implements Screen {
     List<Enemy> enemies = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
+    Player[] players = new Player[11];
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
     private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
@@ -86,6 +89,10 @@ public class ScreenGame implements Screen {
             }
         }
 
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player();
+        }
+
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
@@ -98,6 +105,12 @@ public class ScreenGame implements Screen {
 
     @Override
     public void show() {
+        isGameOver = false;
+        ship = new Ship(SCR_WIDTH/2, 200);
+        main.player.clear();
+        enemies.clear();
+        fragments.clear();
+        shots.clear();
     }
 
     @Override
@@ -171,9 +184,12 @@ public class ScreenGame implements Screen {
             batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         }
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
-        font50white.draw(batch, "Kills: "+main.player.kills, 10, 1580);
+        font50white.draw(batch, "Score: "+main.player.score, 10, 1580);
         if(isGameOver){
             font.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
+            for (int i = 0; i < players.length-1; i++) {
+                font50white.draw(batch, players[i].name+"    "+players[i].score, 200, 1100-i*80);
+            }
         }
         /*for (int i = 0; i < ship.hp; i++) {
             batch.draw(imgShip[0], SCR_WIDTH-i*70-140, 1600-70, 60, 60);
@@ -212,6 +228,8 @@ public class ScreenGame implements Screen {
         spawnFragments(ship);
         isGameOver = true;
         ship.x = -10000;
+        sortLeaderBoard();
+        saveLeaderBoard();
     }
 
     private void spawnEnemy(){
@@ -239,8 +257,47 @@ public class ScreenGame implements Screen {
     private void playerKillCounts(Enemy e){
         main.player.kills++;
         main.player.killedType[e.type]++;
-        //main.player.score += e.hp;
+        main.player.score += e.price;
     }
+
+    private void sortLeaderBoard(){
+        players[players.length-1] =  new Player(main.player);
+        for (int j = 0; j < players.length; j++) {
+            for (int i = 0; i < players.length-1; i++) {
+                if(players[i].score < players[i+1].score){
+                    Player p = players[i];
+                    players[i] = players[i+1];
+                    players[i+1] = p;
+                }
+            }
+        }
+    }
+
+    void saveLeaderBoard(){
+        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXLeaderBoard");
+        for (int i = 0; i < players.length; i++) {
+            prefs.putString("name"+i, players[i].name);
+            prefs.putInteger("kills"+i, players[i].kills);
+            prefs.putInteger("score"+i, players[i].score);
+            for (int j = 0; j < players[i].killedType.length; j++) {
+                prefs.putInteger("killedType"+i+"."+j, players[i].killedType[j]);
+            }
+        }
+        prefs.flush();
+    }
+/*
+    void loadTableOfRecords(){
+        Preferences prefs = Gdx.app.getPreferences("PokemonRecords");
+        for (int i = 0; i < player.length; i++) {
+            player[i].name = prefs.getString("name"+i, "Noname");
+            player[i].time = prefs.getLong("time"+i, 0);
+        }
+    }
+
+    void clearTableOfRecords(){
+        for (Player p : player) p.set("Noname", 0);
+    }
+*/
 
     class SpaceXProcessor implements InputProcessor{
 
