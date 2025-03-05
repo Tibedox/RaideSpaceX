@@ -14,10 +14,7 @@ public class Player {
         kills = 0;
     }
 
-    public Player() {
-    }
-
-    public Player(Player p) {
+    public void clone(Player p) {
         name = p.name;
         score = p.score;
         for (int i = 0; i < killedType.length; i++) {

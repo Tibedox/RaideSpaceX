@@ -45,6 +45,7 @@ public class ScreenSettings implements Screen {
         btnAccelerometer = new SpaceXButton(controls==ACCELEROMETER?fontLightGreen:fontDarkGreen, "Accelerometr", 200, 900);
         btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 750);
         btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
+        loadSettings();
     }
 
     @Override
@@ -143,5 +144,12 @@ public class ScreenSettings implements Screen {
         prefs.putBoolean("Joystick", main.joystick.side);
         prefs.putBoolean("Sound", isSoundOn);
         prefs.flush();
+    }
+
+    private void loadSettings() {
+        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        controls = prefs.getInteger("Controls", SCREEN);
+        main.joystick.setSide(prefs.getBoolean("Joystick", RIGHT));
+        isSoundOn = prefs.getBoolean("Sound", true);
     }
 }

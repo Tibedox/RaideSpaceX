@@ -47,7 +47,7 @@ public class ScreenGame implements Screen {
     List<Enemy> enemies = new ArrayList<>();
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
-    Player[] players = new Player[11];
+    Player[] players = new Player[10];
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
     private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
@@ -89,10 +89,6 @@ public class ScreenGame implements Screen {
             }
         }
 
-        for (int i = 0; i < players.length; i++) {
-            players[i] = new Player();
-        }
-
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
@@ -101,6 +97,11 @@ public class ScreenGame implements Screen {
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
         ship = new Ship(SCR_WIDTH/2, 200);
+
+        for (int i = 0; i < players.length; i++) {
+            players[i] = new Player();
+        }
+        loadLeaderBoard();
     }
 
     @Override
@@ -187,7 +188,7 @@ public class ScreenGame implements Screen {
         font50white.draw(batch, "Score: "+main.player.score, 10, 1580);
         if(isGameOver){
             font.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
-            for (int i = 0; i < players.length-1; i++) {
+            for (int i = 0; i < players.length; i++) {
                 font50white.draw(batch, players[i].name+"    "+players[i].score, 200, 1100-i*80);
             }
         }
@@ -261,19 +262,21 @@ public class ScreenGame implements Screen {
     }
 
     private void sortLeaderBoard(){
-        players[players.length-1] =  new Player(main.player);
-        for (int j = 0; j < players.length; j++) {
-            for (int i = 0; i < players.length-1; i++) {
-                if(players[i].score < players[i+1].score){
-                    Player p = players[i];
-                    players[i] = players[i+1];
-                    players[i+1] = p;
+        if(main.player.score >= players[players.length-1].score) {
+            players[players.length - 1].clone(main.player);
+            for (int j = 0; j < players.length; j++) {
+                for (int i = 0; i < players.length - 1; i++) {
+                    if (players[i].score < players[i + 1].score) {
+                        Player p = players[i];
+                        players[i] = players[i + 1];
+                        players[i + 1] = p;
+                    }
                 }
             }
         }
     }
 
-    void saveLeaderBoard(){
+    private void saveLeaderBoard(){
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXLeaderBoard");
         for (int i = 0; i < players.length; i++) {
             prefs.putString("name"+i, players[i].name);
@@ -285,15 +288,19 @@ public class ScreenGame implements Screen {
         }
         prefs.flush();
     }
-/*
-    void loadTableOfRecords(){
-        Preferences prefs = Gdx.app.getPreferences("PokemonRecords");
-        for (int i = 0; i < player.length; i++) {
-            player[i].name = prefs.getString("name"+i, "Noname");
-            player[i].time = prefs.getLong("time"+i, 0);
+
+    private void loadLeaderBoard(){
+        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXLeaderBoard");
+        for (int i = 0; i < players.length; i++) {
+            players[i].name = prefs.getString("name"+i);
+            players[i].kills = prefs.getInteger("kills"+i);
+            players[i].score = prefs.getInteger("score"+i);
+            for (int j = 0; j < players[i].killedType.length; j++) {
+                players[i].killedType[j] = prefs.getInteger("killedType"+i+"."+j);
+            }
         }
     }
-
+/*
     void clearTableOfRecords(){
         for (Player p : player) p.set("Noname", 0);
     }

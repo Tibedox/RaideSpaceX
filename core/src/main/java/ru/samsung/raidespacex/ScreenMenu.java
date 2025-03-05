@@ -41,7 +41,6 @@ public class ScreenMenu implements Screen {
         btnLeaderBoard = new SpaceXButton(font, "LeaderBoard", 250, 700);
         btnAbout = new SpaceXButton(font, "About", 250, 550);
         btnExit = new SpaceXButton(font, "Exit", 250, 400);
-        loadSettings();
     }
 
     @Override
@@ -89,13 +88,6 @@ public class ScreenMenu implements Screen {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void loadSettings() {
-        Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
-        controls = prefs.getInteger("Controls", SCREEN);
-        main.joystick.setSide(prefs.getBoolean("Joystick", RIGHT));
-        isSoundOn = prefs.getBoolean("Sound", true);
     }
 
     @Override
