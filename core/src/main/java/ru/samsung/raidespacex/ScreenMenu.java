@@ -112,6 +112,6 @@ public class ScreenMenu implements Screen {
 
     @Override
     public void dispose() {
-
+        imgBG.dispose();
     }
 }

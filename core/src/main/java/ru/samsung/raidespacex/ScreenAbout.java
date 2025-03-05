@@ -82,6 +82,6 @@ public class ScreenAbout implements Screen {
 
     @Override
     public void dispose() {
-
+        imgBG.dispose();
     }
 }

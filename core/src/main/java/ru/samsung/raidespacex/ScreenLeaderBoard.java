@@ -82,6 +82,6 @@ public class ScreenLeaderBoard implements Screen {
 
     @Override
     public void dispose() {
-
+        imgBG.dispose();
     }
 }

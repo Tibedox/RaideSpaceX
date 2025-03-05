@@ -20,9 +20,13 @@ public class ScreenSettings implements Screen {
     Vector3 touch;
     BitmapFont fontLightGreen;
     BitmapFont fontDarkGreen;
+    BitmapFont font50white;
+
+    InputKeyboard keyboard;
 
     Texture imgBG;
 
+    SpaceXButton btnPlayerName;
     SpaceXButton btnControls;
     SpaceXButton btnScreen;
     SpaceXButton btnJoystick;
@@ -37,15 +41,21 @@ public class ScreenSettings implements Screen {
         touch = main.touch;
         fontLightGreen = main.fontLightGreen;
         fontDarkGreen = main.fontDarkGreen;
+        font50white = main.font50white;
+
+        keyboard = new InputKeyboard(font50white, SCR_WIDTH, SCR_HEIGHT/2, 9);
 
         imgBG = new Texture("bg3.jpg");
-        btnControls = new SpaceXButton(fontLightGreen, "Controls", 100, 1200);
-        btnScreen = new SpaceXButton(controls==SCREEN?fontLightGreen:fontDarkGreen, "Screen", 200, 1100);
-        btnJoystick = new SpaceXButton(controls==JOYSTICK?fontLightGreen:fontDarkGreen, joystickText(), 200, 1000);
-        btnAccelerometer = new SpaceXButton(controls==ACCELEROMETER?fontLightGreen:fontDarkGreen, "Accelerometr", 200, 900);
-        btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 750);
-        btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
+
         loadSettings();
+
+        btnPlayerName = new SpaceXButton(fontLightGreen, "Name: "+main.player.name, 100, 1200);
+        btnControls = new SpaceXButton(fontLightGreen, "Controls", 100, 1050);
+        btnScreen = new SpaceXButton(controls==SCREEN?fontLightGreen:fontDarkGreen, "Screen", 200, 950);
+        btnJoystick = new SpaceXButton(controls==JOYSTICK?fontLightGreen:fontDarkGreen, joystickText(), 200, 850);
+        btnAccelerometer = new SpaceXButton(controls==ACCELEROMETER?fontLightGreen:fontDarkGreen, "Accelerometr", 200, 750);
+        btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 600);
+        btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
     }
 
     @Override
@@ -59,6 +69,13 @@ public class ScreenSettings implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
+            if (keyboard.touch(touch)) {
+                main.player.name = keyboard.getText();
+                btnPlayerName.setText("Name: "+main.player.name);
+            }
+            if(btnPlayerName.hit(touch)){
+                keyboard.start();
+            }
             if(btnScreen.hit(touch)){
                 btnScreen.setFont(fontLightGreen);
                 btnJoystick.setFont(fontDarkGreen);
@@ -96,12 +113,14 @@ public class ScreenSettings implements Screen {
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
         fontLightGreen.draw(batch,"Settings", 0, 1500, SCR_WIDTH, Align.center, true);
+        btnPlayerName.font.draw(batch, btnPlayerName.text, btnPlayerName.x, btnPlayerName.y);
         btnControls.font.draw(batch, btnControls.text, btnControls.x, btnControls.y);
         btnScreen.font.draw(batch, btnScreen.text, btnScreen.x, btnScreen.y);
         btnJoystick.font.draw(batch, btnJoystick.text, btnJoystick.x, btnJoystick.y);
         btnAccelerometer.font.draw(batch, btnAccelerometer.text, btnAccelerometer.x, btnAccelerometer.y);
         btnSound.font.draw(batch, btnSound.text, btnSound.x, btnSound.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
+        keyboard.draw(batch);
         batch.end();
     }
 
@@ -127,7 +146,8 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void dispose() {
-
+        imgBG.dispose();
+        keyboard.dispose();
     }
 
     private String joystickText() {
@@ -140,6 +160,7 @@ public class ScreenSettings implements Screen {
 
     private void saveSettings() {
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        prefs.putString("Name", main.player.name);
         prefs.putInteger("Controls", controls);
         prefs.putBoolean("Joystick", main.joystick.side);
         prefs.putBoolean("Sound", isSoundOn);
@@ -148,6 +169,7 @@ public class ScreenSettings implements Screen {
 
     private void loadSettings() {
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXSettings");
+        main.player.name = prefs.getString("Name", "Noname");
         controls = prefs.getInteger("Controls", SCREEN);
         main.joystick.setSide(prefs.getBoolean("Joystick", RIGHT));
         isSoundOn = prefs.getBoolean("Sound", true);

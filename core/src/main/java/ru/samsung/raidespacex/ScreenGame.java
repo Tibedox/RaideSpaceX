@@ -188,8 +188,13 @@ public class ScreenGame implements Screen {
         font50white.draw(batch, "Score: "+main.player.score, 10, 1580);
         if(isGameOver){
             font.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
+            font50white.draw(batch, "score", 450, 1170, 150, Align.right, false);
+            font50white.draw(batch, "kills", 600, 1170, 150, Align.right, false);
             for (int i = 0; i < players.length; i++) {
-                font50white.draw(batch, players[i].name+"    "+players[i].score, 200, 1100-i*80);
+                font50white.draw(batch, i+1+" ", 140, 1100-i*80);
+                font50white.draw(batch, players[i].name, 200, 1100-i*80);
+                font50white.draw(batch, ""+players[i].score, 450, 1100-i*80, 150, Align.right, false);
+                font50white.draw(batch, ""+players[i].kills, 600, 1100-i*80, 150, Align.right, false);
             }
         }
         /*for (int i = 0; i < ship.hp; i++) {
@@ -221,7 +226,12 @@ public class ScreenGame implements Screen {
 
     @Override
     public void dispose() {
-
+        imgShotsAtlas.dispose();
+        imgShipsAtlas.dispose();
+        imgJoystick.dispose();
+        imgBG.dispose();
+        sndExplosion.dispose();
+        sndBlaster.dispose();
     }
 
     private void gameOver(){
@@ -292,11 +302,11 @@ public class ScreenGame implements Screen {
     private void loadLeaderBoard(){
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXLeaderBoard");
         for (int i = 0; i < players.length; i++) {
-            players[i].name = prefs.getString("name"+i);
-            players[i].kills = prefs.getInteger("kills"+i);
-            players[i].score = prefs.getInteger("score"+i);
+            players[i].name = prefs.getString("name"+i, "Noname");
+            players[i].kills = prefs.getInteger("kills"+i, 0);
+            players[i].score = prefs.getInteger("score"+i, 0);
             for (int j = 0; j < players[i].killedType.length; j++) {
-                players[i].killedType[j] = prefs.getInteger("killedType"+i+"."+j);
+                players[i].killedType[j] = prefs.getInteger("killedType"+i+"."+j, 0);
             }
         }
     }
