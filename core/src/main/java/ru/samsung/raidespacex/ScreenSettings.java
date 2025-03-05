@@ -69,42 +69,45 @@ public class ScreenSettings implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
-            if (keyboard.touch(touch)) {
-                main.player.name = keyboard.getText();
-                btnPlayerName.setText("Name: "+main.player.name);
-            }
-            if(btnPlayerName.hit(touch)){
-                keyboard.start();
-            }
-            if(btnScreen.hit(touch)){
-                btnScreen.setFont(fontLightGreen);
-                btnJoystick.setFont(fontDarkGreen);
-                btnAccelerometer.setFont(fontDarkGreen);
-                controls = SCREEN;
-            }
-            if(btnJoystick.hit(touch)){
-                btnScreen.setFont(fontDarkGreen);
-                btnJoystick.setFont(fontLightGreen);
-                btnAccelerometer.setFont(fontDarkGreen);
-                if(controls == JOYSTICK) {
-                    main.joystick.setSide(!main.joystick.side);
-                    btnJoystick.setText(joystickText());
-                } else {
-                    controls = JOYSTICK;
+            if(keyboard.isKeyboardShow) {
+                if (keyboard.touch(touch)) {
+                    main.player.name = keyboard.getText();
+                    btnPlayerName.setText("Name: " + main.player.name);
                 }
-            }
-            if(btnAccelerometer.hit(touch)){
-                btnScreen.setFont(fontDarkGreen);
-                btnJoystick.setFont(fontDarkGreen);
-                btnAccelerometer.setFont(fontLightGreen);
-                controls = ACCELEROMETER;
-            }
-            if(btnSound.hit(touch.x, touch.y)){
-                isSoundOn = !isSoundOn;
-                btnSound.setText(soundText());
-            }
-            if(btnBack.hit(touch.x, touch.y)){
-                main.setScreen(main.screenMenu);
+            } else {
+                if (btnPlayerName.hit(touch)) {
+                    keyboard.start();
+                }
+                if (btnScreen.hit(touch)) {
+                    btnScreen.setFont(fontLightGreen);
+                    btnJoystick.setFont(fontDarkGreen);
+                    btnAccelerometer.setFont(fontDarkGreen);
+                    controls = SCREEN;
+                }
+                if (btnJoystick.hit(touch)) {
+                    btnScreen.setFont(fontDarkGreen);
+                    btnJoystick.setFont(fontLightGreen);
+                    btnAccelerometer.setFont(fontDarkGreen);
+                    if (controls == JOYSTICK) {
+                        main.joystick.setSide(!main.joystick.side);
+                        btnJoystick.setText(joystickText());
+                    } else {
+                        controls = JOYSTICK;
+                    }
+                }
+                if (btnAccelerometer.hit(touch)) {
+                    btnScreen.setFont(fontDarkGreen);
+                    btnJoystick.setFont(fontDarkGreen);
+                    btnAccelerometer.setFont(fontLightGreen);
+                    controls = ACCELEROMETER;
+                }
+                if (btnSound.hit(touch.x, touch.y)) {
+                    isSoundOn = !isSoundOn;
+                    btnSound.setText(soundText());
+                }
+                if (btnBack.hit(touch.x, touch.y)) {
+                    main.setScreen(main.screenMenu);
+                }
             }
         }
 
