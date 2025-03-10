@@ -3,7 +3,6 @@ package ru.samsung.raidespacex;
 import static ru.samsung.raidespacex.Main.*;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,7 +31,7 @@ public class ScreenMenu implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.fontLightGreen;
+        font = main.font100lightGreen;
 
         imgBG = new Texture("bg1.jpg");
 

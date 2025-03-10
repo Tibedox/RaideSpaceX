@@ -12,9 +12,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 /**
  * 1. копируем класс InputKeyboard.java в пакет приложения,
  *    копируем в assets атлас изображений кнопок keys.png
- * 2. в поле главного класса создаём ссылку
+ * 2. в поле вызывающего класса создаём ссылку
  *    InputKeyboard keyboard;
- * 3. в методе create создаём объект
+ * 3. в методе create или в конструкторе создаём объект
  *    keyboard = new InputKeyboard(font, SCR_WIDTH, SCR_HEIGHT, 12);
  * 4. когда требуется включить клавиатуру, вызываем
  *    keyboard.start();
@@ -22,6 +22,12 @@ import com.badlogic.gdx.utils.TimeUtils;
  * 5. в методе render передаём в клавиатуру координаты касания и если touch вернул true,
  *    то завершаем ввод и передаём введённый текст в переменную name, а клавиатура исчезает
  *    if (keyboard.touch(touch.x, touch.y)) name = keyboard.getText();
+ *    Чтобы кроме клавиатуры не обрабатывались прочие касания, используем флаг isKeyboardShow:
+ *    if(keyboard.isKeyboardShow){
+ *        if (keyboard.touch(touch.x, touch.y)) name = keyboard.getText();
+ *    } else {
+ *        // все прочие касания
+ *    }
  * 6. в batch рисуем клавиатуру, она будет рисоваться только после вызова keyboard.start()
  *    keyboard.draw(batch);
  * 7. в методе dispose удаляем объект

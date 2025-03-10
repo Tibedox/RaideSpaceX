@@ -39,8 +39,8 @@ public class ScreenSettings implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        fontLightGreen = main.fontLightGreen;
-        fontDarkGreen = main.fontDarkGreen;
+        fontLightGreen = main.font100lightGreen;
+        fontDarkGreen = main.font100darkGreen;
         font50white = main.font50white;
 
         keyboard = new InputKeyboard(font50white, SCR_WIDTH, SCR_HEIGHT/2, 9);

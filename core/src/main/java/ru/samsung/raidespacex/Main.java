@@ -18,8 +18,8 @@ public class Main extends Game {
     public SpriteBatch batch;
     public OrthographicCamera camera;
     public Vector3 touch;
-    public BitmapFont fontLightGreen;
-    public BitmapFont fontDarkGreen;
+    public BitmapFont font100lightGreen;
+    public BitmapFont font100darkGreen;
     public BitmapFont font50white;
 
     Joystick joystick;
@@ -36,9 +36,9 @@ public class Main extends Game {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, SCR_WIDTH,SCR_HEIGHT);
         touch = new Vector3();
-        fontLightGreen = new BitmapFont(Gdx.files.internal("dscrystal100lightgreen.fnt"));
-        fontDarkGreen = new BitmapFont(Gdx.files.internal("dscrystal100darkgreen.fnt"));
-        font50white = new BitmapFont(Gdx.files.internal("dscrystal50white.fnt"));
+        font100lightGreen = new BitmapFont(Gdx.files.internal("fonts/dscrystal100lightgreen.fnt"));
+        font100darkGreen = new BitmapFont(Gdx.files.internal("fonts/dscrystal100darkgreen.fnt"));
+        font50white = new BitmapFont(Gdx.files.internal("fonts/dscrystal50white.fnt"));
 
         joystick = new Joystick(360, RIGHT);
         player = new Player();
@@ -47,14 +47,14 @@ public class Main extends Game {
         screenSettings = new ScreenSettings(this);
         screenLeaderBoard = new ScreenLeaderBoard(this);
         screenAbout = new ScreenAbout(this);
-        setScreen(screenGame);
+        setScreen(screenMenu);
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        fontLightGreen.dispose();
-        fontDarkGreen.dispose();
+        font100lightGreen.dispose();
+        font100darkGreen.dispose();
         font50white.dispose();
     }
 }

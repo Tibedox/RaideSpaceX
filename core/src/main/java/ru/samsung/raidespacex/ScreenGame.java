@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ScreenGame implements Screen {
@@ -25,7 +24,7 @@ public class ScreenGame implements Screen {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     private final Vector3 touch;
-    private final BitmapFont font;
+    private final BitmapFont font100lightGreen;
     private final BitmapFont font50white;
 
     Texture imgJoystick;
@@ -60,7 +59,7 @@ public class ScreenGame implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.fontLightGreen;
+        font100lightGreen = main.font100lightGreen;
         font50white = main.font50white;
         Gdx.input.setInputProcessor(new SpaceXProcessor());
 
@@ -187,7 +186,7 @@ public class ScreenGame implements Screen {
         batch.draw(imgShip[ship.phase], ship.scrX(), ship.scrY(), ship.width, ship.height);
         font50white.draw(batch, "Score: "+main.player.score, 10, 1580);
         if(isGameOver){
-            font.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
+            font100lightGreen.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
             font50white.draw(batch, "score", 450, 1170, 150, Align.right, false);
             font50white.draw(batch, "kills", 600, 1170, 150, Align.right, false);
             for (int i = 0; i < players.length; i++) {
@@ -286,7 +285,7 @@ public class ScreenGame implements Screen {
         }
     }
 
-    private void saveLeaderBoard(){
+    public void saveLeaderBoard(){
         Preferences prefs = Gdx.app.getPreferences("RaideSpaceXLeaderBoard");
         for (int i = 0; i < players.length; i++) {
             prefs.putString("name"+i, players[i].name);
@@ -310,11 +309,17 @@ public class ScreenGame implements Screen {
             }
         }
     }
-/*
-    void clearTableOfRecords(){
-        for (Player p : player) p.set("Noname", 0);
+
+    public void clearLeaderBoard(){
+        for (int i = 0; i < players.length; i++) {
+            players[i].name = "Noname";
+            players[i].kills = 0;
+            players[i].score = 0;
+            for (int j = 0; j < players[i].killedType.length; j++) {
+                players[i].killedType[j] = 0;
+            }
+        }
     }
-*/
 
     class SpaceXProcessor implements InputProcessor{
 

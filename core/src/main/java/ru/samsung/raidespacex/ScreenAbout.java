@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 
 public class ScreenAbout implements Screen {
 
@@ -28,11 +29,11 @@ public class ScreenAbout implements Screen {
         batch = main.batch;
         camera = main.camera;
         touch = main.touch;
-        font = main.fontLightGreen;
+        font = main.font100lightGreen;
 
         imgBG = new Texture("bg5.jpg");
 
-        btnBack = new SpaceXButton(font, "Back", 250, 400);
+        btnBack = new SpaceXButton(font, "Back", 150);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ScreenAbout implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        font.draw(batch,"About", 350, 1200);
+        font.draw(batch,"About", 0, 1500, SCR_WIDTH, Align.center, true);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();
     }
