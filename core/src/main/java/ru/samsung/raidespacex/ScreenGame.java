@@ -53,8 +53,7 @@ public class ScreenGame implements Screen {
     Player[] players = new Player[10];
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
-    private long timeLastSpawnShot;
-    public long timeSpawnShotsInterval = 800;
+    private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
 
     private int nFragments = 100;
     private boolean isGameOver;
@@ -262,7 +261,7 @@ public class ScreenGame implements Screen {
     }
 
     private void spawnShot(){
-        if(TimeUtils.millis()>timeLastSpawnShot+timeSpawnShotsInterval){
+        if(TimeUtils.millis()>timeLastSpawnShot+timeSpawnShotsInterval || shooting == BY_BUTTON){
             timeLastSpawnShot = TimeUtils.millis();
             shots.add(new Shot(ship.x-60, ship.y+20));
             shots.add(new Shot(ship.x+60, ship.y+20));
@@ -355,7 +354,9 @@ public class ScreenGame implements Screen {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
             if(controls == SCREEN) {
-                ship.touchScreen(touch);
+                if(!(shooting == BY_BUTTON && shootingButton.isTouchInside(touch))) {
+                    ship.touchScreen(touch);
+                }
             }
             if(controls == JOYSTICK) {
                 if(joystick.isTouchInside(touch)) {
@@ -386,7 +387,9 @@ public class ScreenGame implements Screen {
             touch.set(screenX, screenY, 0);
             camera.unproject(touch);
             if(controls == SCREEN) {
-                ship.touchScreen(touch);
+                if(!(shooting == BY_BUTTON && shootingButton.isTouchInside(touch))) {
+                    ship.touchScreen(touch);
+                }
             }
             if(controls == JOYSTICK) {
                 if(joystick.isTouchInside(touch)) {

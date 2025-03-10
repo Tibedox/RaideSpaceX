@@ -58,8 +58,8 @@ public class ScreenSettings implements Screen {
         btnJoystick = new SpaceXButton(controls==JOYSTICK?fontLightGreen:fontDarkGreen, joystickText(), 200, 900);
         btnAccelerometer = new SpaceXButton(controls==ACCELEROMETER?fontLightGreen:fontDarkGreen, "Accelerometr", 200, 800);
         btnShooting = new SpaceXButton(fontLightGreen, "Shooting", 100, 650);
-        btnPeriodically = new SpaceXButton(fontLightGreen, "Periodically", 200, 550);
-        btnByButton = new SpaceXButton(fontLightGreen, "ByButton", 200, 450);
+        btnPeriodically = new SpaceXButton(shooting==PERIODICALLY?fontLightGreen:fontDarkGreen, "Periodically", 200, 550);
+        btnByButton = new SpaceXButton(shooting==BY_BUTTON?fontLightGreen:fontDarkGreen, "ByButton", 200, 450);
         btnSound = new SpaceXButton(fontLightGreen, soundText(), 100, 300);
         btnBack = new SpaceXButton(fontLightGreen, "Back", 150);
     }
@@ -99,16 +99,26 @@ public class ScreenSettings implements Screen {
                         btnJoystick.setText(joystickText());
                     } else {
                         controls = JOYSTICK;
-                        shooting = BY_BUTTON;
-                        main.screenGame.shootingButton.setSide(!main.screenGame.joystick.side);
-                        main.screenGame.timeSpawnShotsInterval = 80;
                     }
+                    main.screenGame.shootingButton.setSide(!main.screenGame.joystick.side);
                 }
                 if (btnAccelerometer.hit(touch)) {
                     btnScreen.setFont(fontDarkGreen);
                     btnJoystick.setFont(fontDarkGreen);
                     btnAccelerometer.setFont(fontLightGreen);
                     controls = ACCELEROMETER;
+                }
+                if(btnPeriodically.hit(touch)){
+                    btnPeriodically.setFont(fontLightGreen);
+                    btnByButton.setFont(fontDarkGreen);
+                    shooting = PERIODICALLY;
+                    main.screenGame.shootingButton.setSide(!main.screenGame.joystick.side);
+                }
+                if(btnByButton.hit(touch)){
+                    btnPeriodically.setFont(fontDarkGreen);
+                    btnByButton.setFont(fontLightGreen);
+                    shooting = BY_BUTTON;
+                    main.screenGame.shootingButton.setSide(!main.screenGame.joystick.side);
                 }
                 if (btnSound.hit(touch.x, touch.y)) {
                     isSoundOn = !isSoundOn;
@@ -178,6 +188,7 @@ public class ScreenSettings implements Screen {
         prefs.putString("Name", main.player.name);
         prefs.putInteger("Controls", controls);
         prefs.putBoolean("Joystick", main.screenGame.joystick.side);
+        prefs.putInteger("ShootingButton", shooting);
         prefs.putBoolean("Sound", isSoundOn);
         prefs.flush();
     }
@@ -187,6 +198,8 @@ public class ScreenSettings implements Screen {
         main.player.name = prefs.getString("Name", "Noname");
         controls = prefs.getInteger("Controls", SCREEN);
         main.screenGame.joystick.setSide(prefs.getBoolean("Joystick", RIGHT));
+        shooting = prefs.getInteger("ShootingButton", PERIODICALLY);
+        main.screenGame.shootingButton.setSide(!main.screenGame.joystick.side);
         isSoundOn = prefs.getBoolean("Sound", true);
     }
 }
