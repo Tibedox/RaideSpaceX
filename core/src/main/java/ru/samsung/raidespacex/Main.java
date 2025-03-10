@@ -13,6 +13,8 @@ public class Main extends Game {
     public static final int SCREEN = 0, JOYSTICK = 1, ACCELEROMETER = 2;
     public static final boolean LEFT = false, RIGHT = true;
     public static int controls = SCREEN;
+    public static final int PERIODICALLY = 0, BY_BUTTON = 1;
+    public static int shooting = PERIODICALLY;
     public static boolean isSoundOn = true;
 
     public SpriteBatch batch;
@@ -22,7 +24,6 @@ public class Main extends Game {
     public BitmapFont font100darkGreen;
     public BitmapFont font50white;
 
-    Joystick joystick;
     public ScreenMenu screenMenu;
     public ScreenGame screenGame;
     public ScreenSettings screenSettings;
@@ -40,7 +41,6 @@ public class Main extends Game {
         font100darkGreen = new BitmapFont(Gdx.files.internal("fonts/dscrystal100darkgreen.fnt"));
         font50white = new BitmapFont(Gdx.files.internal("fonts/dscrystal50white.fnt"));
 
-        joystick = new Joystick(360, RIGHT);
         player = new Player();
         screenMenu = new ScreenMenu(this);
         screenGame = new ScreenGame(this);

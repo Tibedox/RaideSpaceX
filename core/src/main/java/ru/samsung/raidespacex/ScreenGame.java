@@ -27,7 +27,11 @@ public class ScreenGame implements Screen {
     private final BitmapFont font100lightGreen;
     private final BitmapFont font50white;
 
+    Joystick joystick;
+    ShootingButton shootingButton;
+
     Texture imgJoystick;
+    Texture imgShootingButton;
     Texture imgBG;
     Texture imgShipsAtlas;
     Texture imgShotsAtlas;
@@ -49,7 +53,8 @@ public class ScreenGame implements Screen {
     Player[] players = new Player[10];
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
-    private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
+    private long timeLastSpawnShot;
+    public long timeSpawnShotsInterval = 800;
 
     private int nFragments = 100;
     private boolean isGameOver;
@@ -62,8 +67,11 @@ public class ScreenGame implements Screen {
         font100lightGreen = main.font100lightGreen;
         font50white = main.font50white;
         Gdx.input.setInputProcessor(new SpaceXProcessor());
+        joystick = new Joystick(360, RIGHT);
+        shootingButton = new ShootingButton(180, !joystick.side);
 
         imgJoystick = new Texture("joystick.png");
+        imgShootingButton = new Texture("redcircle.png");
         imgBG = new Texture("bg2.jpg");
         imgShipsAtlas = new Texture("ships_atlas.png");
         imgShotsAtlas = new Texture("shots.png");
@@ -164,7 +172,7 @@ public class ScreenGame implements Screen {
         }
         if(!isGameOver) {
             ship.move();
-            spawnShot();
+            if(shooting == PERIODICALLY) spawnShot();
         }
 
         // отрисовка
@@ -172,7 +180,10 @@ public class ScreenGame implements Screen {
         batch.begin();
         for(Space s: space) batch.draw(imgBG, s.x, s.y, s.width, s.height);
         if(controls == JOYSTICK){
-            batch.draw(imgJoystick, main.joystick.scrX(), main.joystick.scrY(), main.joystick.width, main.joystick.height);
+            batch.draw(imgJoystick, joystick.scrX(), joystick.scrY(), joystick.width, joystick.height);
+        }
+        if(shooting == BY_BUTTON){
+            batch.draw(imgShootingButton, shootingButton.scrX(), shootingButton.scrY(), shootingButton.width, shootingButton.height);
         }
         for (Fragment f: fragments) {
             batch.draw(imgFragment[f.type][f.numImg], f.scrX(), f.scrY(), f.width/2, f.height/2, f.width, f.height, 1, 1, f.rotation);
@@ -228,6 +239,7 @@ public class ScreenGame implements Screen {
         imgShotsAtlas.dispose();
         imgShipsAtlas.dispose();
         imgJoystick.dispose();
+        imgShootingButton.dispose();
         imgBG.dispose();
         sndExplosion.dispose();
         sndBlaster.dispose();
@@ -346,8 +358,13 @@ public class ScreenGame implements Screen {
                 ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                if(main.joystick.isTouchInside(touch)) {
-                    ship.touchJoystick(touch, main.joystick);
+                if(joystick.isTouchInside(touch)) {
+                    ship.touchJoystick(touch, joystick);
+                }
+            }
+            if(shooting == BY_BUTTON) {
+                if(shootingButton.isTouchInside(touch)) {
+                    spawnShot();
                 }
             }
             return false;
@@ -372,8 +389,8 @@ public class ScreenGame implements Screen {
                 ship.touchScreen(touch);
             }
             if(controls == JOYSTICK) {
-                if(main.joystick.isTouchInside(touch)) {
-                    ship.touchJoystick(touch, main.joystick);
+                if(joystick.isTouchInside(touch)) {
+                    ship.touchJoystick(touch, joystick);
                 }
             }
             return false;
