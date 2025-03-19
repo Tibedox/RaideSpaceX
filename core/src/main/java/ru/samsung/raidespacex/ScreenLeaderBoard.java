@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.List;
+
 public class ScreenLeaderBoard implements Screen {
 
     private Main main;
@@ -27,6 +29,10 @@ public class ScreenLeaderBoard implements Screen {
     SpaceXButton btnClear;
     SpaceXButton btnBack;
 
+    private boolean isGlobal;
+    Player[] players;
+    List<DataFromBase> db;
+
     public ScreenLeaderBoard(Main main) {
         this.main = main;
         batch = main.batch;
@@ -34,6 +40,7 @@ public class ScreenLeaderBoard implements Screen {
         touch = main.touch;
         font100lightGreen = main.font100lightGreen;
         font50white = main.font50white;
+        players = main.screenGame.players;
 
         imgBG = new Texture("bg4.jpg");
 
@@ -44,7 +51,7 @@ public class ScreenLeaderBoard implements Screen {
 
     @Override
     public void show() {
-
+        isGlobal = false;
     }
 
     @Override
@@ -53,7 +60,16 @@ public class ScreenLeaderBoard implements Screen {
             touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touch);
 
-            if(btnClear.hit(touch)){
+            if(btnGlobal.hit(touch)){
+                isGlobal = !isGlobal;
+                if(isGlobal) {
+                    main.screenGame.loadFromDataBase();
+                    btnGlobal.setText("Global");
+                } else {
+                    btnGlobal.setText("Local");
+                }
+            }
+            if(btnClear.hit(touch) && !isGlobal){
                 main.screenGame.clearLeaderBoard();
                 main.screenGame.saveLeaderBoard();
             }
@@ -66,14 +82,28 @@ public class ScreenLeaderBoard implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        for (int i = 0; i < main.screenGame.players.length; i++) {
-            font50white.draw(batch, i+1+" ", 140, 1200-i*80);
-            font50white.draw(batch, main.screenGame.players[i].name, 200, 1200-i*80);
-            font50white.draw(batch, ""+main.screenGame.players[i].score, 450, 1200-i*80, 150, Align.right, false);
-            font50white.draw(batch, ""+main.screenGame.players[i].kills, 600, 1200-i*80, 150, Align.right, false);
-        }
         font100lightGreen.draw(batch,"Leader Board", 0, 1500, SCR_WIDTH, Align.center, true);
         btnGlobal.font.draw(batch, btnGlobal.text, btnGlobal.x, btnGlobal.y);
+        font50white.draw(batch, "score", 450, 1220, 150, Align.right, false);
+        font50white.draw(batch, "kills", 600, 1220, 150, Align.right, false);
+        if(isGlobal){
+            db = main.screenGame.db;
+            if(db.size()>0) {
+                for (int i = 0; i < main.screenGame.players.length; i++) {
+                    font50white.draw(batch, i + 1 + " ", 140, 1150 - i * 80);
+                    font50white.draw(batch, db.get(i).name, 200, 1150 - i * 80);
+                    font50white.draw(batch, "" + db.get(i).score, 450, 1150 - i * 80, 150, Align.right, false);
+                    font50white.draw(batch, "" + db.get(i).kills, 600, 1150 - i * 80, 150, Align.right, false);
+                }
+            }
+        } else {
+            for (int i = 0; i < main.screenGame.players.length; i++) {
+                font50white.draw(batch, i + 1 + " ", 140, 1150 - i * 80);
+                font50white.draw(batch, players[i].name, 200, 1150 - i * 80);
+                font50white.draw(batch, "" + players[i].score, 450, 1150 - i * 80, 150, Align.right, false);
+                font50white.draw(batch, "" + players[i].kills, 600, 1150 - i * 80, 150, Align.right, false);
+            }
+        }
         btnClear.font.draw(batch, btnClear.text, btnClear.x, btnClear.y);
         btnBack.font.draw(batch, btnBack.text, btnBack.x, btnBack.y);
         batch.end();

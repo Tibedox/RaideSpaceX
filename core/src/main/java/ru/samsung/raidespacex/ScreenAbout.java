@@ -12,6 +12,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ScreenAbout implements Screen {
 
     private Main main;
@@ -38,7 +47,6 @@ public class ScreenAbout implements Screen {
 
     @Override
     public void show() {
-
     }
 
     @Override

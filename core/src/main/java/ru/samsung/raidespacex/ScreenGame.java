@@ -17,7 +17,14 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ScreenGame implements Screen {
     private final Main main;
@@ -44,6 +51,7 @@ public class ScreenGame implements Screen {
     Sound sndBlaster;
 
     SpaceXButton btnBack;
+    SpaceXButton btnGlobal;
 
     Space[] space = new Space[2];
     Ship ship;
@@ -51,12 +59,14 @@ public class ScreenGame implements Screen {
     List<Shot> shots = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
     Player[] players = new Player[10];
+    List<DataFromBase> db = new ArrayList<>();
 
     private long timeLastSpawnEnemy, timeSpawnEnemyInterval = 1500;
     private long timeLastSpawnShot, timeSpawnShotsInterval = 800;
 
     private int nFragments = 100;
     private boolean isGameOver;
+    private boolean isGlobal;
 
     public ScreenGame(Main main) {
         this.main = main;
@@ -99,6 +109,7 @@ public class ScreenGame implements Screen {
         sndBlaster = Gdx.audio.newSound(Gdx.files.internal("blaster.mp3"));
 
         btnBack = new SpaceXButton(font50white, "x", 850, 1580);
+        btnGlobal = new SpaceXButton(font100lightGreen, "Local", 1200);
 
         space[0] = new Space(0, 0);
         space[1] = new Space(0, SCR_HEIGHT);
@@ -112,12 +123,7 @@ public class ScreenGame implements Screen {
 
     @Override
     public void show() {
-        isGameOver = false;
-        ship = new Ship(SCR_WIDTH/2, 200);
-        main.player.clear();
-        enemies.clear();
-        fragments.clear();
-        shots.clear();
+        gameStart();
     }
 
     @Override
@@ -129,6 +135,15 @@ public class ScreenGame implements Screen {
 
             if(btnBack.hit(touch)){
                 main.setScreen(main.screenMenu);
+            }
+            if(btnGlobal.hit(touch)){
+                isGlobal = !isGlobal;
+                if(isGlobal) {
+                    main.screenGame.loadFromDataBase();
+                    btnGlobal.setText("Global");
+                } else {
+                    btnGlobal.setText("Local");
+                }
             }
         }
         if (controls == ACCELEROMETER){
@@ -197,13 +212,26 @@ public class ScreenGame implements Screen {
         font50white.draw(batch, "Score: "+main.player.score, 10, 1580);
         if(isGameOver){
             font100lightGreen.draw(batch, "GAME OVER", 0, 1300, SCR_WIDTH, Align.center, true);
-            font50white.draw(batch, "score", 450, 1170, 150, Align.right, false);
-            font50white.draw(batch, "kills", 600, 1170, 150, Align.right, false);
-            for (int i = 0; i < players.length; i++) {
-                font50white.draw(batch, i+1+" ", 140, 1100-i*80);
-                font50white.draw(batch, players[i].name, 200, 1100-i*80);
-                font50white.draw(batch, ""+players[i].score, 450, 1100-i*80, 150, Align.right, false);
-                font50white.draw(batch, ""+players[i].kills, 600, 1100-i*80, 150, Align.right, false);
+            btnGlobal.font.draw(batch, btnGlobal.text, btnGlobal.x, btnGlobal.y);
+            font50white.draw(batch, "score", 450, 1070, 150, Align.right, false);
+            font50white.draw(batch, "kills", 600, 1070, 150, Align.right, false);
+
+            if(isGlobal){
+                if(db.size()>0) {
+                    for (int i = 0; i < players.length; i++) {
+                        font50white.draw(batch, i+1+" ", 140, 1000-i*80);
+                        font50white.draw(batch, db.get(i).name, 200, 1000-i*80);
+                        font50white.draw(batch, ""+db.get(i).score, 450, 1000-i*80, 150, Align.right, false);
+                        font50white.draw(batch, ""+db.get(i).kills, 600, 1000-i*80, 150, Align.right, false);
+                    }
+                }
+            } else {
+                for (int i = 0; i < players.length; i++) {
+                    font50white.draw(batch, i+1+" ", 140, 1000-i*80);
+                    font50white.draw(batch, players[i].name, 200, 1000-i*80);
+                    font50white.draw(batch, ""+players[i].score, 450, 1000-i*80, 150, Align.right, false);
+                    font50white.draw(batch, ""+players[i].kills, 600, 1000-i*80, 150, Align.right, false);
+                }
             }
         }
         /*for (int i = 0; i < ship.hp; i++) {
@@ -244,6 +272,16 @@ public class ScreenGame implements Screen {
         sndBlaster.dispose();
     }
 
+    private void gameStart(){
+        isGameOver = false;
+        isGlobal = false;
+        ship = new Ship(SCR_WIDTH/2, 200);
+        main.player.clear();
+        enemies.clear();
+        fragments.clear();
+        shots.clear();
+    }
+
     private void gameOver(){
         if (isSoundOn) sndExplosion.play();
         spawnFragments(ship);
@@ -251,6 +289,7 @@ public class ScreenGame implements Screen {
         ship.x = -10000;
         sortLeaderBoard();
         saveLeaderBoard();
+        sendRecordToDataBase();
     }
 
     private void spawnEnemy(){
@@ -408,5 +447,55 @@ public class ScreenGame implements Screen {
         public boolean scrolled(float amountX, float amountY) {
             return false;
         }
+    }
+
+    private void sortDataBase(){
+        class Cmp implements Comparator<DataFromBase>{
+            @Override
+            public int compare(DataFromBase o1, DataFromBase o2) {
+                return o2.score-o1.score;
+            }
+        }
+        db.sort(new Cmp());
+    }
+
+    public void loadFromDataBase() {
+        Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://sch120.ru")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+        MyApi myApi = retrofit.create(MyApi.class);
+
+        myApi.send("records").enqueue(new Callback<List<DataFromBase>>() {
+            @Override
+            public void onResponse(Call<List<DataFromBase>> call, Response<List<DataFromBase>> response) {
+                db = response.body();
+                sortDataBase();
+            }
+
+            @Override
+            public void onFailure(Call<List<DataFromBase>> call, Throwable t) {
+            }
+        });
+    }
+
+    private void sendRecordToDataBase() {
+        Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("https://sch120.ru")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+        MyApi myApi = retrofit.create(MyApi.class);
+
+        myApi.send(main.player.name, main.player.score, main.player.kills).enqueue(new Callback<List<DataFromBase>>() {
+            @Override
+            public void onResponse(Call<List<DataFromBase>> call, Response<List<DataFromBase>> response) {
+                db = response.body();
+                sortDataBase();
+            }
+
+            @Override
+            public void onFailure(Call<List<DataFromBase>> call, Throwable t) {
+            }
+        });
     }
 }
