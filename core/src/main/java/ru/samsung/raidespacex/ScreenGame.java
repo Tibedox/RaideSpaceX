@@ -315,9 +315,11 @@ public class ScreenGame implements Screen {
     }
 
     private void playerKillCounts(Enemy e){
-        main.player.kills++;
-        main.player.killedType[e.type]++;
-        main.player.score += e.price;
+        if(!isGameOver) {
+            main.player.kills++;
+            main.player.killedType[e.type]++;
+            main.player.score += e.price;
+        }
     }
 
     private void sortLeaderBoard(){
@@ -465,6 +467,18 @@ public class ScreenGame implements Screen {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
         MyApi myApi = retrofit.create(MyApi.class);
+
+        /*Call<List<DataFromBase>> call = myApi.send("records");
+        try {
+            Response<List<DataFromBase>> response = call.execute();
+            db = response.body();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 0; i < db.size(); i++) {
+            System.out.println(db.get(i).name);
+        }*/
 
         myApi.send("records").enqueue(new Callback<List<DataFromBase>>() {
             @Override
